@@ -11,16 +11,16 @@ func LinkParse(r io.Reader) string {
 		panic(err)
 	}
 
-	return getString(doc)
+	return getText(doc)
 }
 
-func getString(n *html.Node) string {
+func getText(n *html.Node) string {
 	var text string
 	if n.Type == html.TextNode {
 		text = n.Data
 	}
 	for c := n.FirstChild; c != nil; c = c.NextSibling {
-		text += getString(c)
+		text += getText(c)
 	}
 	return text
 }
