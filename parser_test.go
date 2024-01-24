@@ -1,4 +1,4 @@
-package linkparser
+package link
 
 import (
 	"io"
@@ -8,7 +8,7 @@ import (
 	"testing"
 )
 
-func TestHtmlLinkParse(t *testing.T) {
+func TestParse(t *testing.T) {
 	cases := []struct {
 		Description   string
 		Html          string
@@ -87,17 +87,25 @@ func TestParseExampleFiles(t *testing.T) {
 	for _, test := range cases {
 		t.Run(test.Description, func(t *testing.T) {
 			f, err := os.Open(test.Path)
-			if err != nil {
-				t.Fatalf("got an error not expected: %v", err)
-			}
+			defer f.Close()
+			assertNoError(t, err)
 			assertParse(t, f, test.ExpectedParse)
 		})
 	}
 }
 
 func assertParse(t testing.TB, r io.Reader, want []Link) {
-	got := HtmlLinkParse(r)
+	t.Helper()
+	got, err := Parse(r)
+	assertNoError(t, err)
 	if !reflect.DeepEqual(got, want) {
 		t.Errorf("got %v, want %v", got, want)
+	}
+}
+
+func assertNoError(t testing.TB, got error) {
+	t.Helper()
+	if got != nil {
+		t.Fatalf("got an error not expected: %v", got)
 	}
 }
