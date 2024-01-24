@@ -3,6 +3,7 @@ package linkparser
 import (
 	"golang.org/x/net/html"
 	"io"
+	"strings"
 )
 
 type Link struct {
@@ -37,18 +38,22 @@ func getHref(n *html.Node) string {
 	for _, at := range n.Attr {
 		if at.Key == "href" {
 			return at.Val
+			break
 		}
 	}
 	return ""
 }
 
 func getText(n *html.Node) string {
-	var text string
 	if n.Type == html.TextNode {
-		text = n.Data
+		return n.Data
 	}
+	if n.Type != html.ElementNode {
+		return ""
+	}
+	var text string
 	for c := n.FirstChild; c != nil; c = c.NextSibling {
 		text += getText(c)
 	}
-	return text
+	return strings.Join(strings.Fields(text), " ")
 }
