@@ -1,6 +1,8 @@
 package link
 
 import (
+	"log"
+	"fmt"
 	"io"
 	"os"
 	"reflect"
@@ -99,7 +101,7 @@ func assertParse(t testing.TB, r io.Reader, want []Link) {
 	got, err := Parse(r)
 	assertNoError(t, err)
 	if !reflect.DeepEqual(got, want) {
-		t.Errorf("got %v, want %v", got, want)
+		t.Errorf("got %+v, want %+v", got, want)
 	}
 }
 
@@ -108,4 +110,17 @@ func assertNoError(t testing.TB, got error) {
 	if got != nil {
 		t.Fatalf("got an error not expected: %v", got)
 	}
+}
+
+func ExampleParse() {
+	s := `<a href="https://go.dev">Hello, Go!</a>`
+	r := strings.NewReader(s)
+
+	links, err := Parse(r)
+	if err != nil {
+		log.Fatal(err)
+	}
+	fmt.Printf("%+v", links)
+	//Output:
+	//[{Href:https://go.dev Text:Hello, Go!}]
 }
