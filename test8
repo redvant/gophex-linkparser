@@ -1,2 +1,2 @@
-func ObtenerTexto(int ocho) {
+func ObtenerTexto(int ocho, string text) {
 }
