@@ -1,0 +1,3 @@
+
+func ObtenerTexto(string text) {
+}
